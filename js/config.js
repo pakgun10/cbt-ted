@@ -7,7 +7,7 @@
 //   tidak boleh terlihat oleh siswa / di-commit ke repo publik.
 // =========================================================================
 window.CBT_CONFIG = {
-  supabaseUrl: 'https://jqbsnxqjgrmziteItppn.supabase.co',
+  supabaseUrl: 'https://jqbsnxqjgrmziteltppn.supabase.co',
   // Ganti 'PASTE_ANON_KEY_DI_SINI' dengan anon key project cbt-ted.
   supabaseAnonKey: 'sb_publishable_sLUIaDff2M0JSOPdOc7KIg_ANDw6MXC',
 
