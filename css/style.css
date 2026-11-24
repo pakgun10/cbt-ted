@@ -1,0 +1,138 @@
+::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #94a3b8;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #64748b;
+    }
+
+    /* Pecahan Matematika Rapi */
+    .frac {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      vertical-align: middle;
+      margin: 0 3px;
+      font-size: 0.9em;
+      line-height: 1.1;
+    }
+    .frac-top {
+      border-bottom: 1.5px solid currentColor;
+      padding: 0 3px 1px 3px;
+    }
+    .frac-bot {
+      padding: 1px 3px 0 3px;
+    }
+
+    /* Styling Bingkai Sertifikat */
+    .cert-border {
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      border: 10px solid #1e3a8a;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+      box-sizing: border-box;
+    }
+    .cert-inner-border {
+      border: 3px double #d97706;
+      height: 100%;
+      width: 100%;
+      position: relative;
+      box-sizing: border-box;
+    }
+    .cert-corner {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      border-color: #d97706;
+      border-style: solid;
+    }
+    .cert-tl { top: 6px; left: 6px; border-width: 3px 0 0 3px; }
+    .cert-tr { top: 6px; right: 6px; border-width: 3px 3px 0 0; }
+    .cert-bl { bottom: 6px; left: 6px; border-width: 0 0 3px 3px; }
+    .cert-br { bottom: 6px; right: 6px; border-width: 0 3px 3px 0; }
+
+    /* Mode Cetak / PDF Satu Lembar Utuh (A4 Landscape) */
+    #print-area.pdf-single-page {
+      width: 1060px !important;
+      max-width: 1060px !important;
+      height: 735px !important;
+      margin: 0 !important;
+      padding: 12px !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      overflow: hidden !important;
+    }
+    #print-area.pdf-single-page .cert-inner-border {
+      padding: 16px 28px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: space-between !important;
+    }
+
+    @media print {
+      @page {
+        size: A4 landscape;
+        margin: 6mm;
+      }
+      body * {
+        visibility: hidden;
+      }
+      #print-area, #print-area * {
+        visibility: visible;
+      }
+      #print-area {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100% !important;
+        height: 100% !important;
+        max-height: 196mm !important;
+        margin: 0 !important;
+        padding: 8px !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+      #print-area .cert-inner-border {
+        padding: 12px 22px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: space-between !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      #printable-questions-area.active-print, #printable-questions-area.active-print * {
+        visibility: visible;
+      }
+      #printable-questions-area.active-print {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+      }
+      #printable-solutions-area.active-print, #printable-solutions-area.active-print * {
+        visibility: visible !important;
+      }
+      #printable-solutions-area.active-print {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+      }
+    }

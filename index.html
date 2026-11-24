@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CBT Matematika Kelas 9 - SMP Negeri 2 Kotagajah</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- html2pdf.js untuk Unduh Langsung File PDF Sertifikat -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+            serif: ['Georgia', 'Cambria', 'Times New Roman', 'Times', 'serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#2563eb',
+              600: '#1d4ed8',
+              700: '#1e40af',
+              800: '#1e3a8a',
+              900: '#172554',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="bg-gradient-to-br from-slate-100 via-blue-50/60 to-indigo-100/50 text-slate-900 font-sans antialiased min-h-screen flex flex-col selection:bg-brand-600 selection:text-white">
+
+  <!-- ==================== GLOBAL NOTIFICATION / TOAST ==================== -->
+  <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
+
+  <!-- ==================== CUSTOM MODAL DIALOG ==================== -->
+  <div id="custom-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden transform transition-all border border-slate-200">
+      <div id="modal-header" class="px-6 py-4 bg-brand-800 text-white flex items-center justify-between">
+        <h3 id="modal-title" class="font-bold text-lg flex items-center gap-2">
+          <i class="fa-solid fa-circle-info"></i> Konfirmasi
+        </h3>
+        <button onclick="closeModal()" class="text-white/80 hover:text-white p-1 rounded-lg">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <div class="p-6">
+        <p id="modal-message" class="text-slate-600 text-sm sm:text-base leading-relaxed"></p>
+        <div id="modal-email-wrapper" class="mt-4 hidden">
+          <label for="modal-email" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Email Guru (Supabase Auth)</label>
+          <input type="email" id="modal-email" placeholder="teddy@sekolah.sch.id" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-slate-800" />
+        </div>
+        <div id="modal-input-wrapper" class="mt-4 hidden">
+          <label for="modal-input" class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5">Password Guru</label>
+          <div class="relative">
+            <input type="password" id="modal-input" placeholder="Ketik password..." class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-slate-800" />
+            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+              <i id="eye-icon" class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+          <p id="modal-error" class="text-red-600 text-xs mt-1.5 hidden font-medium"></p>
+        </div>
+      </div>
+      <div id="modal-footer" class="px-6 py-3.5 bg-slate-50 border-t border-slate-200 flex justify-end gap-3">
+        <button id="modal-cancel-btn" onclick="closeModal()" class="px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-200 transition">Batal</button>
+        <button id="modal-confirm-btn" class="px-5 py-2 rounded-xl text-sm font-semibold bg-brand-600 hover:bg-brand-700 text-white shadow-sm transition">Lanjutkan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== HEADER RESMI SEKOLAH ==================== -->
+  <header class="bg-gradient-to-r from-brand-900 via-brand-800 to-blue-800 text-white shadow-lg sticky top-0 z-40 border-b-4 border-amber-400 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-3">
+      <!-- Identitas & Logo Sekolah -->
+      <div class="flex items-center gap-3.5 cursor-pointer" onclick="switchView('view-login')">
+        <div id="header-logo-box" class="w-12 h-14 sm:w-14 sm:h-16 shrink-0 flex items-center justify-center rounded-xl bg-white/10 border border-white/20 p-1 overflow-hidden">
+          <svg id="header-logo-svg" viewBox="-6 -6 172 214" preserveAspectRatio="xMidYMid meet" class="w-full h-full object-contain overflow-visible drop-shadow">
+            <path d="M 4,2 L 156,2 L 156,143 L 80,200 L 4,143 Z" fill="#facc15" stroke="#111827" stroke-width="3" stroke-linejoin="round" />
+            <path d="M 11,9 L 149,9 L 149,139 L 80,192 L 11,139 Z" fill="#008c45" stroke="#111827" stroke-width="2.5" stroke-linejoin="round" />
+            <rect x="12.5" y="10.5" width="135" height="22" fill="#dc2626" />
+            <path d="M 22,27 L 26,17 L 33,27 L 37,17 M 46,18 L 51,27 L 56,18 M 66,27 L 73,17 M 83,18 L 83,26 L 93,26 M 103,17 L 103,27 M 99,22 L 108,22 M 118,27 L 122,18 L 127,26 L 134,20" fill="none" stroke="#ffffff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" />
+            <rect x="12.5" y="32.5" width="135" height="17" fill="#ffffff" stroke="#111827" stroke-width="1.5" />
+            <text x="80" y="44.5" text-anchor="middle" fill="#111827" font-size="11.2" font-weight="900" font-family="sans-serif" letter-spacing="1.1">LAMPUNG TENGAH</text>
+            <line x1="11" y1="51.5" x2="149" y2="51.5" stroke="#facc15" stroke-width="4" />
+            <line x1="11" y1="53.8" x2="149" y2="53.8" stroke="#111827" stroke-width="1.5" />
+            <path d="M 40,84 Q 80,52 120,84 L 114,87 Q 80,60 46,87 Z" fill="#ffffff" stroke="#111827" stroke-width="1.1" />
+            <path d="M 45,87 Q 80,59 115,87 L 110,90 Q 80,66 50,90 Z" fill="#facc15" />
+            <path d="M 49,90 Q 80,65 111,90 L 106,99 Q 80,88 54,99 Z" fill="#dc2626" stroke="#111827" stroke-width="1.1" />
+            <path d="M 80,68 L 62,95 M 80,68 L 71,93 M 80,68 L 80,92 M 80,68 L 89,93 M 80,68 L 98,95" stroke="#ffffff" stroke-width="0.9" opacity="0.85" />
+            <line x1="80" y1="56" x2="80" y2="65" stroke="#facc15" stroke-width="3" stroke-linecap="round" />
+            <circle cx="80" cy="56" r="2" fill="#ffffff" stroke="#111827" stroke-width="0.8" />
+            <line x1="80" y1="93" x2="80" y2="112" stroke="#ffffff" stroke-width="2.5" />
+            <line x1="59" y1="97" x2="59" y2="138" stroke="#ffffff" stroke-width="2.5" />
+            <circle cx="59" cy="96" r="2.2" fill="#ffffff" stroke="#111827" stroke-width="0.8" />
+            <line x1="101" y1="97" x2="101" y2="138" stroke="#ffffff" stroke-width="2.5" />
+            <circle cx="101" cy="96" r="2.2" fill="#ffffff" stroke="#111827" stroke-width="0.8" />
+            <rect x="63" y="107" width="34" height="5.5" fill="#ffffff" stroke="#111827" stroke-width="1" />
+            <rect x="65" y="112.5" width="30" height="23.5" fill="none" stroke="#ffffff" stroke-width="2" />
+            <line x1="80" y1="112.5" x2="80" y2="136" stroke="#ffffff" stroke-width="1.5" />
+            <rect x="57" y="136" width="46" height="5.5" fill="#ffffff" stroke="#111827" stroke-width="1" />
+            <rect x="50" y="141.5" width="60" height="5.5" fill="#ffffff" stroke="#111827" stroke-width="1" />
+            <path d="M 43,146 Q 25,112 37,75" fill="none" stroke="#facc15" stroke-width="2.2" stroke-linecap="round" />
+            <g fill="#facc15" stroke="#111827" stroke-width="0.7">
+              <ellipse cx="34" cy="82" rx="3" ry="5.5" transform="rotate(-25 34 82)" />
+              <ellipse cx="31" cy="93" rx="3" ry="5.5" transform="rotate(-20 31 93)" />
+              <ellipse cx="30" cy="104" rx="3" ry="5.5" transform="rotate(-10 30 104)" />
+              <ellipse cx="31" cy="115" rx="3" ry="5.5" transform="rotate(5 31 115)" />
+              <ellipse cx="34" cy="126" rx="3" ry="5.5" transform="rotate(15 34 126)" />
+              <ellipse cx="39" cy="136" rx="3" ry="5.5" transform="rotate(25 39 136)" />
+            </g>
+            <path d="M 117,146 Q 135,112 123,75" fill="none" stroke="#111827" stroke-width="2.2" stroke-linecap="round" />
+            <g fill="#ffffff" stroke="#111827" stroke-width="1.4">
+              <circle cx="125" cy="82" r="4.2" />
+              <circle cx="128" cy="93" r="4.5" />
+              <circle cx="129" cy="104" r="4.5" />
+              <circle cx="128" cy="115" r="4.5" />
+              <circle cx="125" cy="126" r="4.5" />
+              <circle cx="120" cy="136" r="4.2" />
+            </g>
+            <path id="hdr-jurai-curve" d="M 32,151 Q 80,178 128,151" fill="none" />
+            <path d="M 22,141 L 40,147 Q 80,171 120,147 L 138,141 L 131,156 Q 80,183 29,156 Z" fill="#ffffff" stroke="#111827" stroke-width="1.6" stroke-linejoin="round" />
+            <text fill="#dc2626" font-size="11.5" font-weight="900" font-family="sans-serif" letter-spacing="1.2">
+              <textPath href="#hdr-jurai-curve" startOffset="50%" text-anchor="middle">JURAISIWO</textPath>
+            </text>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 text-[10px] sm:text-xs font-bold uppercase tracking-wider bg-amber-400 text-slate-950 rounded-md">CBT Online</span>
+            <span class="text-xs text-blue-200 hidden sm:inline">Tahun Pelajaran 2026/2027</span>
+          </div>
+          <h1 class="text-base sm:text-xl font-extrabold tracking-tight leading-tight mt-0.5">SMP NEGERI 2 KOTAGAJAH</h1>
+          <p class="text-[11px] sm:text-xs text-blue-200">Jl. Srirahayu No. 17 Kotagajah, Kab. Lampung Tengah • Mapel: <strong class="text-white">Matematika Kelas IX</strong></p>
+        </div>
+      </div>
+
+      <!-- Navigasi Portal -->
+      <div class="flex flex-wrap items-center gap-2 ml-auto sm:ml-0">
+        <div id="sync-badge" class="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 text-xs text-blue-100 border border-white/15">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span id="sync-text" class="text-white font-semibold">352 Siswa Terdaftar</span>
+        </div>
+        <button id="btn-cert-portal" onclick="openCertificateLookupView()" class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-cyan-300 hover:bg-cyan-200 text-slate-950 font-extrabold text-xs sm:text-sm shadow-md transition active:scale-95">
+          <i class="fa-solid fa-award text-cyan-950"></i>
+          <span>Unduh Sertifikat</span>
+        </button>
+        <button id="btn-teacher-portal" onclick="openTeacherLogin()" class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs sm:text-sm shadow-md transition active:scale-95">
+          <i class="fa-solid fa-chalkboard-user text-amber-950"></i>
+          <span>Tool Guru</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CONTENT AREA ==================== -->
+  <main class="flex-grow flex flex-col">
+
+    <!-- ==================== VIEW 1: HALAMAN LOGIN SISWA ==================== -->
+    <section id="view-login" class="max-w-5xl mx-auto w-full px-4 py-6 sm:py-10 flex-grow flex items-center">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 w-full items-stretch">
+        
+        <!-- Panel Informasi Ujian (Kiri) -->
+        <div class="lg:col-span-5 bg-gradient-to-br from-brand-900 via-brand-950 to-slate-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col justify-between relative overflow-hidden">
+          <div class="absolute -right-10 -bottom-10 w-48 h-48 rounded-full bg-blue-500/10 blur-xl pointer-events-none"></div>
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/20 border border-amber-300/40 text-amber-200 text-xs font-bold mb-4">
+              <i class="fa-solid fa-award text-amber-300"></i> Penilaian Sumatif Berbasis Komputer
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white leading-snug mb-3">Ujian Online Matematika Kelas 9</h2>
+            <p class="text-slate-100 text-sm leading-relaxed mb-6">
+              Silakan pilih kelas (9A–9K) dan nama lengkap Anda sesuai daftar hadir resmi SMP Negeri 2 Kotagajah untuk memulai ujian.
+            </p>
+
+            <!-- Detail Spesifikasi Soal -->
+            <div class="space-y-3 bg-slate-900/75 backdrop-blur-sm rounded-2xl p-4 border border-white/20 text-sm">
+              <div class="flex items-center justify-between border-b border-white/15 pb-2">
+                <span class="text-slate-100 font-medium"><i class="fa-solid fa-list-ol w-5 text-amber-300"></i> Jumlah Soal</span>
+                <span class="font-extrabold text-white">40 Pilihan Ganda</span>
+              </div>
+              <div class="flex items-center justify-between border-b border-white/15 pb-2">
+                <span class="text-slate-100 font-medium"><i class="fa-solid fa-clock w-5 text-amber-300"></i> Durasi Waktu</span>
+                <span class="font-extrabold text-white">90 Menit</span>
+              </div>
+              <div class="flex items-start justify-between">
+                <span class="text-slate-100 font-medium shrink-0"><i class="fa-solid fa-book-open w-5 text-amber-300"></i> Materi Uji</span>
+                <span class="font-bold text-white text-right text-xs leading-relaxed">SPLDV, Bangun Ruang Sisi Datar, Lingkaran, &amp; Bangun Ruang Sisi Lengkung</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-white/20 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center font-black shadow-sm shrink-0">
+              TY
+            </div>
+            <div>
+              <p class="text-xs text-slate-200 font-medium">Guru Mata Pelajaran:</p>
+              <p class="text-sm font-extrabold text-white">TEDDY KUSUMA YUDHA, S.Pd.</p>
+              <p class="text-[11px] text-amber-200 font-medium">NIP. 19780613 200801 1 017</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel Form Login Peserta (Kanan) -->
+        <div class="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-2 border-blue-100 flex flex-col justify-center relative overflow-hidden">
+          <div class="h-1.5 w-full bg-gradient-to-r from-brand-600 via-indigo-500 to-amber-400 absolute top-0 left-0"></div>
+          <div class="mb-5">
+            <h3 class="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2.5">
+              <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-600 to-indigo-600 text-white flex items-center justify-center text-sm shadow-sm">
+                <i class="fa-solid fa-user-graduate"></i>
+              </span>
+              Identitas Peserta Ujian
+            </h3>
+            <p class="text-slate-600 text-sm mt-1">Pilih Kelas dan Nama Lengkap sesuai Daftar Hadir Resmi TP 2026/2027.</p>
+          </div>
+
+          <div id="supabase-status" class="hidden mb-4 p-3.5 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 text-xs sm:text-sm"></div>
+
+          <form id="login-form" class="space-y-4" onsubmit="handleStartExam(event)">
+            <!-- Pilih Kelas & Nama Siswa -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label for="select-kelas" class="block text-xs font-bold uppercase tracking-wider text-brand-900 mb-1.5">
+                  Pilih Kelas <span class="text-red-500">*</span>
+                </label>
+                <select id="select-kelas" onchange="handleClassChange(this.value)" required class="w-full px-3.5 py-3 rounded-xl border-2 border-blue-200 bg-blue-50/40 focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm font-bold text-slate-900 transition">
+                  <option value="">-- Kelas --</option>
+                  <option value="9A">Kelas 9A (34)</option>
+                  <option value="9B">Kelas 9B (33)</option>
+                  <option value="9C">Kelas 9C (33)</option>
+                  <option value="9D">Kelas 9D (32)</option>
+                  <option value="9E">Kelas 9E (30)</option>
+                  <option value="9F">Kelas 9F (32)</option>
+                  <option value="9G">Kelas 9G (32)</option>
+                  <option value="9H">Kelas 9H (31)</option>
+                  <option value="9I">Kelas 9I (30)</option>
+                  <option value="9J">Kelas 9J (32)</option>
+                  <option value="9K">Kelas 9K (33)</option>
+                </select>
+              </div>
+
+              <div class="sm:col-span-2">
+                <label for="select-siswa" class="block text-xs font-bold uppercase tracking-wider text-brand-900 mb-1.5">
+                  Pilih Nama Siswa <span class="text-red-500">*</span>
+                </label>
+                <select id="select-siswa" onchange="handleStudentChange(this.value)" disabled required class="w-full px-3.5 py-3 rounded-xl border-2 border-blue-200 bg-blue-50/40 disabled:bg-slate-100 disabled:border-slate-200 disabled:opacity-70 focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm font-bold text-slate-900 transition">
+                  <option value="">-- Pilih Kelas Terlebih Dahulu --</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Kartu Verifikasi Identitas Siswa Otomatis -->
+            <div id="student-verify-card" class="hidden p-4 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[11px] font-extrabold uppercase tracking-wider text-brand-800 flex items-center gap-1.5">
+                  <i class="fa-solid fa-id-card text-brand-600"></i> Verifikasi Data Peserta Resmi
+                </span>
+                <span id="verify-absen" class="px-2 py-0.5 rounded-md bg-brand-700 text-white text-[10px] font-bold">No. Absen: -</span>
+              </div>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                <div class="bg-white/80 p-2 rounded-xl border border-blue-100">
+                  <p class="text-[10px] text-slate-500 font-semibold">NIS</p>
+                  <p id="verify-nis" class="font-extrabold text-slate-900">-</p>
+                </div>
+                <div class="bg-white/80 p-2 rounded-xl border border-blue-100">
+                  <p class="text-[10px] text-slate-500 font-semibold">NISN</p>
+                  <p id="verify-nisn" class="font-extrabold text-slate-900">-</p>
+                </div>
+                <div class="bg-white/80 p-2 rounded-xl border border-blue-100">
+                  <p class="text-[10px] text-slate-500 font-semibold">Jenis Kelamin</p>
+                  <p id="verify-jk" class="font-extrabold text-slate-900">-</p>
+                </div>
+                <div class="bg-white/80 p-2 rounded-xl border border-blue-100">
+                  <p class="text-[10px] text-slate-500 font-semibold">Wali Kelas</p>
+                  <p id="verify-walas" class="font-extrabold text-slate-900 truncate">-</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Kartu Petunjuk Singkat Berwarna -->
+            <div class="grid grid-cols-3 gap-2.5 pt-1">
+              <div class="p-3 rounded-2xl bg-blue-100/80 border border-blue-300 text-center">
+                <span class="w-7 h-7 mx-auto rounded-lg bg-brand-700 text-white flex items-center justify-center text-xs mb-1"><i class="fa-solid fa-shuffle"></i></span>
+                <p class="text-[11px] font-extrabold text-brand-950">Soal Acak</p>
+                <p class="text-[10px] font-semibold text-slate-800">Urutan unik tiap siswa</p>
+              </div>
+              <div class="p-3 rounded-2xl bg-amber-100/80 border border-amber-300 text-center">
+                <span class="w-7 h-7 mx-auto rounded-lg bg-amber-600 text-white flex items-center justify-center text-xs mb-1"><i class="fa-solid fa-stopwatch"></i></span>
+                <p class="text-[11px] font-extrabold text-amber-950">90 Menit</p>
+                <p class="text-[10px] font-semibold text-slate-800">Timer otomatis aktif</p>
+              </div>
+              <div class="p-3 rounded-2xl bg-emerald-100/80 border border-emerald-300 text-center">
+                <span class="w-7 h-7 mx-auto rounded-lg bg-emerald-700 text-white flex items-center justify-center text-xs mb-1"><i class="fa-solid fa-award"></i></span>
+                <p class="text-[11px] font-extrabold text-emerald-950">Sertifikat PDF</p>
+                <p class="text-[10px] font-semibold text-slate-800">Langsung terbit</p>
+              </div>
+            </div>
+
+            <!-- Status Pengerjaan Siswa (Jika sudah pernah mengerjakan) -->
+            <div id="already-done-banner" class="hidden p-3.5 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 text-xs sm:text-sm flex items-start gap-2.5">
+              <i class="fa-solid fa-lock text-amber-600 mt-0.5 text-base"></i>
+              <div>
+                <p id="already-done-title" class="font-extrabold">Akses Dibatasi: Ujian Hanya Dapat Dikerjakan 1 Kali!</p>
+                <p id="already-done-desc" class="mt-0.5">Siswa ini tercatat sudah menyelesaikan ujian. Anda dapat mengunduh sertifikat nilai PDF atau meminta <strong>Pak Teddy</strong> menekan tombol <strong>Reset</strong> pada Tool Guru jika diizinkan mengulang.</p>
+                <button type="button" id="btn-view-existing-cert" onclick="viewExistingCertificate()" class="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-semibold text-xs transition">
+                  <i class="fa-solid fa-certificate"></i> Lihat &amp; Unduh Sertifikat Nilai
+                </button>
+              </div>
+            </div>
+
+            <!-- Status Ujian Ditutup / Dikunci Guru -->
+            <div id="exam-closed-banner" class="hidden p-3.5 rounded-xl bg-rose-50 border-2 border-rose-300 text-rose-950 text-xs sm:text-sm flex items-start gap-2.5">
+              <i class="fa-solid fa-lock text-rose-600 mt-0.5 text-base"></i>
+              <div>
+                <p class="font-extrabold">Sesi Ujian Saat Ini Sedang Ditutup / Dikunci oleh Guru</p>
+                <p class="mt-0.5 text-rose-800">Silakan tunggu instruksi dari Bapak <strong>Teddy Kusuma Yudha, S.Pd.</strong> hingga status ujian dibuka kembali.</p>
+              </div>
+            </div>
+
+            <!-- Tombol Mulai Ujian -->
+            <div class="pt-1">
+              <button type="submit" id="btn-start-exam" disabled class="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-brand-600 via-blue-600 to-indigo-600 hover:from-brand-700 hover:to-indigo-700 disabled:from-slate-300 disabled:to-slate-300 disabled:cursor-not-allowed text-white font-extrabold text-base shadow-lg shadow-brand-600/25 transition flex items-center justify-center gap-2.5 active:scale-[0.99]">
+                <span>MULAI MENGERJAKAN UJIAN</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 2: HALAMAN UJIAN CBT ==================== -->
+    <section id="view-exam" class="hidden max-w-7xl mx-auto w-full px-3 sm:px-6 py-4 sm:py-6 flex-grow">
+      
+      <!-- Top Control Bar Peserta & Timer -->
+      <div class="bg-white rounded-2xl shadow-md border-2 border-blue-100 p-3.5 sm:p-4 mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-brand-600 to-indigo-700 text-white font-extrabold flex items-center justify-center text-sm shadow-md" id="exam-avatar">
+            9A
+          </div>
+          <div>
+            <h2 class="font-extrabold text-slate-900 text-sm sm:text-base leading-tight" id="exam-student-name">NAMA SISWA</h2>
+            <p class="text-xs font-medium text-slate-600" id="exam-student-meta">Kelas 9A • NIS: - • SMP Negeri 2 Kotagajah</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2.5 sm:gap-4 ml-auto">
+          <!-- Pengaturan Ukuran Font -->
+          <div class="hidden md:flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200" title="Ukuran Huruf Soal">
+            <span class="text-[11px] font-semibold text-slate-500 px-2">Ukuran Font:</span>
+            <button type="button" onclick="setFontSize('text-sm')" class="font-btn px-2.5 py-1 rounded-lg text-xs font-bold hover:bg-white transition">A-</button>
+            <button type="button" onclick="setFontSize('text-base')" class="font-btn px-2.5 py-1 rounded-lg text-sm font-bold bg-white shadow-sm text-brand-700 transition">A</button>
+            <button type="button" onclick="setFontSize('text-lg')" class="font-btn px-2.5 py-1 rounded-lg text-base font-bold hover:bg-white transition">A+</button>
+          </div>
+
+          <!-- Timer Hitung Mundur -->
+          <div id="timer-box" class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-brand-50 border border-brand-200 text-brand-900 font-mono font-extrabold text-sm sm:text-base shadow-inner">
+            <i class="fa-regular fa-clock text-brand-600 animate-pulse"></i>
+            <span id="exam-timer">90:00</span>
+          </div>
+
+          <!-- Tombol Daftar Soal Mobile -->
+          <button type="button" onclick="toggleMobileNav()" class="lg:hidden flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 text-white text-xs font-bold">
+            <i class="fa-solid fa-grip"></i>
+            <span>Nomor</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Layout 2 Kolom CBT: Area Soal (Kiri) & Navigasi Grid (Kanan) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+        
+        <!-- KOLOM KIRI: KARTU SOAL -->
+        <div class="lg:col-span-8 bg-white rounded-3xl shadow-lg border-2 border-blue-100 overflow-hidden flex flex-col">
+          <div class="px-5 sm:px-7 py-4 bg-gradient-to-r from-brand-50 via-blue-50 to-indigo-50 border-b border-blue-200 flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2.5">
+              <span class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-brand-700 to-indigo-700 text-white font-extrabold text-sm shadow-sm">
+                SOAL NO. <span id="current-q-num">1</span>
+              </span>
+              <span id="q-topic-badge" class="px-3 py-1 rounded-lg bg-blue-100 text-blue-900 border border-blue-200 text-xs font-extrabold">
+                SPLDV
+              </span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span id="q-diff-badge" class="px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-900 text-xs font-bold">
+                Mudah
+              </span>
+              <span class="text-xs text-slate-600 font-semibold">dari 40 soal</span>
+            </div>
+          </div>
+
+          <!-- Isi Pertanyaan & Pilihan Jawaban -->
+          <div class="p-5 sm:p-8 flex-grow">
+            <div id="question-text" class="text-slate-900 font-medium leading-relaxed mb-6 text-base bg-slate-50/80 p-4 sm:p-5 rounded-2xl border border-slate-200/90"></div>
+            <div id="options-container" class="space-y-3"></div>
+          </div>
+
+          <!-- Navigasi Bawah Soal -->
+          <div class="px-5 sm:px-7 py-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
+            <button type="button" id="btn-prev" onclick="prevQuestion()" class="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 font-bold text-xs sm:text-sm flex items-center gap-2 transition disabled:opacity-40">
+              <i class="fa-solid fa-chevron-left"></i> Sebelumnya
+            </button>
+
+            <label class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-100 hover:bg-amber-200/80 border border-amber-300 text-amber-900 font-bold text-xs sm:text-sm cursor-pointer select-none transition">
+              <input type="checkbox" id="checkbox-ragu" onchange="toggleDoubt()" class="w-4 h-4 accent-amber-600 rounded" />
+              <span>Ragu-ragu</span>
+            </label>
+
+            <button type="button" id="btn-next" onclick="nextQuestion()" class="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-sm transition">
+              <span>Selanjutnya</span> <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- KOLOM KANAN: NAVIGASI NOMOR SOAL -->
+        <div id="nav-sidebar" class="hidden lg:block lg:col-span-4 bg-white rounded-3xl shadow-lg border-2 border-blue-100 p-5 sticky top-24">
+          <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-200">
+            <h3 class="font-extrabold text-slate-900 text-sm flex items-center gap-2">
+              <i class="fa-solid fa-table-cells text-brand-600"></i> Navigasi Nomor Soal
+            </h3>
+            <span id="answered-counter" class="text-xs font-extrabold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800">
+              0 / 40 Terjawab
+            </span>
+          </div>
+
+          <!-- Grid 40 Nomor -->
+          <div id="question-grid" class="grid grid-cols-5 sm:grid-cols-8 lg:grid-cols-5 gap-2 mb-5"></div>
+
+          <!-- Keterangan Warna -->
+          <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-600 bg-slate-50 p-3 rounded-2xl border border-slate-200 mb-5">
+            <div class="flex items-center gap-2">
+              <span class="w-3.5 h-3.5 rounded bg-emerald-600 inline-block"></span> Sudah Dijawab
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-3.5 h-3.5 rounded bg-amber-400 inline-block"></span> Ragu-ragu
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-3.5 h-3.5 rounded bg-white border-2 border-brand-600 inline-block"></span> Sedang Dibuka
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-3.5 h-3.5 rounded bg-slate-200 inline-block"></span> Belum Dijawab
+            </div>
+          </div>
+
+          <!-- Tombol Selesai Ujian -->
+          <button type="button" onclick="confirmFinishExam()" class="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-extrabold text-sm shadow-lg shadow-emerald-600/20 transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-paper-plane"></i>
+            <span>SELESAI &amp; KUMPULKAN</span>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 3: PORTAL UNDUH SERTIFIKAT & HASIL UJIAN ==================== -->
+    <section id="view-certificate" class="hidden max-w-6xl mx-auto w-full px-4 py-6 sm:py-8 flex-grow">
+      
+      <!-- Panel Pencarian Sertifikat Siswa (Muncul saat tombol Unduh Sertifikat diklik) -->
+      <div id="cert-lookup-panel" class="hidden bg-white rounded-3xl shadow-lg border-2 border-cyan-200 p-5 sm:p-7 mb-6 no-print">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <div>
+            <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-award text-cyan-600"></i> Portal Pencarian &amp; Unduh Sertifikat Nilai Siswa
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-600">Pilih kelas dan nama siswa yang telah menyelesaikan ujian untuk menampilkan serta mengunduh sertifikat PDF.</p>
+          </div>
+          <button type="button" onclick="switchView('view-login')" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1.5 transition">
+            <i class="fa-solid fa-arrow-left"></i> Kembali ke Login Ujian
+          </button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">1. Pilih Kelas</label>
+            <select id="cert-lookup-kelas" onchange="handleCertLookupClassChange(this.value)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-slate-50 font-bold text-sm text-slate-900 outline-none focus:border-cyan-600">
+              <option value="">-- Pilih Kelas (9A - 9K) --</option>
+              <option value="9A">Kelas 9A</option>
+              <option value="9B">Kelas 9B</option>
+              <option value="9C">Kelas 9C</option>
+              <option value="9D">Kelas 9D</option>
+              <option value="9E">Kelas 9E</option>
+              <option value="9F">Kelas 9F</option>
+              <option value="9G">Kelas 9G</option>
+              <option value="9H">Kelas 9H</option>
+              <option value="9I">Kelas 9I</option>
+              <option value="9J">Kelas 9J</option>
+              <option value="9K">Kelas 9K</option>
+            </select>
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">2. Pilih Nama Siswa (Yang Sudah Selesai Ujian)</label>
+            <select id="cert-lookup-siswa" onchange="handleCertLookupStudentChange(this.value)" disabled class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-slate-50 disabled:opacity-60 font-bold text-sm text-slate-900 outline-none focus:border-cyan-600">
+              <option value="">-- Pilih Kelas Terlebih Dahulu --</option>
+            </select>
+          </div>
+        </div>
+        <div id="cert-lookup-empty" class="hidden mt-4 p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs sm:text-sm flex items-center gap-2.5">
+          <i class="fa-solid fa-circle-info text-amber-600 text-base"></i>
+          <span>Siswa ini belum menyelesaikan ujian CBT Matematika Kelas 9, sehingga sertifikat belum tersedia.</span>
+        </div>
+      </div>
+
+      <!-- Bar Aksi di Atas Sertifikat -->
+      <div id="cert-action-bar" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 mb-6 flex flex-wrap items-center justify-between gap-3 no-print">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <div>
+            <h2 class="font-extrabold text-slate-900 text-sm sm:text-base">Sertifikat Hasil Evaluasi CBT Matematika</h2>
+            <p class="text-xs text-slate-500">Nomor Sertifikat: <span id="top-cert-no" class="font-mono font-bold text-brand-700">-</span></p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2.5">
+          <button type="button" id="btn-download-pdf" onclick="downloadCertificatePDF()" class="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs sm:text-sm shadow-md flex items-center gap-2 transition">
+            <i class="fa-solid fa-file-pdf"></i>
+            <span>Unduh PDF (1 Lembar Utuh)</span>
+          </button>
+          <button type="button" onclick="window.print()" class="px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs sm:text-sm shadow-md flex items-center gap-2 transition">
+            <i class="fa-solid fa-print"></i>
+            <span>Cetak / Print</span>
+          </button>
+          <button type="button" onclick="switchView('view-login')" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs sm:text-sm flex items-center gap-2 transition">
+            <i class="fa-solid fa-house"></i>
+            <span>Beranda</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- AREA SERTIFIKAT RESMI (A4 LANDSCAPE 1 LEMBAR UTUH) -->
+      <div id="print-area" class="cert-border rounded-2xl p-2 sm:p-3 max-w-5xl mx-auto">
+        <div class="cert-inner-border p-5 sm:p-8 flex flex-col justify-between">
+          <div class="cert-corner cert-tl"></div>
+          <div class="cert-corner cert-tr"></div>
+          <div class="cert-corner cert-bl"></div>
+          <div class="cert-corner cert-br"></div>
+
+          <!-- Header Kop Sertifikat -->
+          <div class="text-center border-b-2 border-slate-800 pb-3 mb-3 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div class="w-16 h-20 shrink-0 flex items-center justify-center">
+              <svg viewBox="-6 -6 172 214" preserveAspectRatio="xMidYMid meet" class="w-full h-full object-contain">
+                <path d="M 4,2 L 156,2 L 156,143 L 80,200 L 4,143 Z" fill="#facc15" stroke="#111827" stroke-width="3" stroke-linejoin="round" />
+                <path d="M 11,9 L 149,9 L 149,139 L 80,192 L 11,139 Z" fill="#008c45" stroke="#111827" stroke-width="2.5" stroke-linejoin="round" />
+                <rect x="12.5" y="10.5" width="135" height="22" fill="#dc2626" />
+                <rect x="12.5" y="32.5" width="135" height="17" fill="#ffffff" stroke="#111827" stroke-width="1.5" />
+                <text x="80" y="44.5" text-anchor="middle" fill="#111827" font-size="11.2" font-weight="900" font-family="sans-serif" letter-spacing="1.1">LAMPUNG TENGAH</text>
+                <path d="M 40,84 Q 80,52 120,84 L 114,87 Q 80,60 46,87 Z" fill="#ffffff" stroke="#111827" stroke-width="1.1" />
+                <path d="M 45,87 Q 80,59 115,87 L 110,90 Q 80,66 50,90 Z" fill="#facc15" />
+                <path d="M 49,90 Q 80,65 111,90 L 106,99 Q 80,88 54,99 Z" fill="#dc2626" stroke="#111827" stroke-width="1.1" />
+                <rect x="65" y="112.5" width="30" height="23.5" fill="none" stroke="#ffffff" stroke-width="2" />
+                <rect x="50" y="141.5" width="60" height="5.5" fill="#ffffff" stroke="#111827" stroke-width="1" />
+              </svg>
+            </div>
+            <div class="flex-grow text-center">
+              <p class="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-slate-600">Pemerintah Kabupaten Lampung Tengah • Dinas Pendidikan dan Kebudayaan</p>
+              <h1 class="text-lg sm:text-2xl font-black text-brand-900 tracking-wide uppercase">SMP NEGERI 2 KOTAGAJAH</h1>
+              <p class="text-[11px] text-slate-600">Jl. Srirahayu No. 17 Kotagajah, Kec. Kotagajah, Kab. Lampung Tengah, Provinsi Lampung</p>
+            </div>
+            <div class="hidden sm:flex flex-col items-end text-right shrink-0">
+              <span class="px-2.5 py-1 rounded bg-brand-900 text-amber-300 font-mono text-[11px] font-bold" id="cert-code-badge">NO: -</span>
+              <span class="text-[10px] text-slate-500 mt-1">TP. 2026/2027</span>
+            </div>
+          </div>
+
+          <!-- Judul Sertifikat -->
+          <div class="text-center my-2">
+            <h2 class="font-serif text-2xl sm:text-3xl font-bold tracking-wider text-amber-700 uppercase">SERTIFIKAT HASIL EVALUASI BELAJAR</h2>
+            <p class="text-xs sm:text-sm text-slate-600 mt-0.5">Penilaian Sumatif Berbasis Komputer (CBT) Mata Pelajaran <strong class="text-slate-900">Matematika Kelas IX</strong></p>
+          </div>
+
+          <!-- Identitas Penerima -->
+          <div class="text-center my-2">
+            <p class="text-xs text-slate-500 uppercase tracking-widest">Diberikan kepada:</p>
+            <h3 id="cert-student-name" class="font-serif text-2xl sm:text-3xl font-extrabold text-brand-950 underline decoration-amber-500 decoration-2 underline-offset-4 my-1 uppercase">
+              NAMA LENGKAP SISWA
+            </h3>
+            <p id="cert-student-detail" class="text-xs sm:text-sm font-semibold text-slate-700">
+              Kelas: 9A • NIS: - • NISN: - • Wali Kelas: -
+            </p>
+          </div>
+
+          <!-- Rincian Nilai & Analisis Materi -->
+          <div class="grid grid-cols-12 gap-3 my-3 items-center">
+            <!-- Kotak Nilai Utama -->
+            <div class="col-span-12 sm:col-span-4 bg-gradient-to-br from-brand-900 to-brand-800 text-white rounded-2xl p-3.5 text-center border-2 border-amber-400 shadow">
+              <p class="text-[10px] uppercase tracking-widest text-amber-300 font-bold">Nilai Akhir Ujian</p>
+              <div id="cert-score" class="text-4xl sm:text-5xl font-black my-1 text-white">0</div>
+              <div id="cert-grade-badge" class="inline-block px-3 py-0.5 rounded-full bg-amber-400 text-slate-950 font-extrabold text-xs">
+                PREDIKAT: -
+              </div>
+              <p id="cert-stats" class="text-[11px] text-blue-100 mt-1.5">Benar: 0 | Salah: 0 | Kosong: 0</p>
+            </div>
+
+            <!-- Tabel Rincian Per Materi -->
+            <div class="col-span-12 sm:col-span-8 bg-white rounded-2xl border border-slate-300 overflow-hidden">
+              <table class="w-full text-xs text-left">
+                <thead class="bg-slate-100 text-slate-800 font-bold border-b border-slate-300">
+                  <tr>
+                    <th class="py-1.5 px-3">Kompetensi / Materi Uji (40 Soal)</th>
+                    <th class="py-1.5 px-2 text-center">Jumlah</th>
+                    <th class="py-1.5 px-2 text-center">Benar</th>
+                    <th class="py-1.5 px-3 text-right">Capaian</th>
+                  </tr>
+                </thead>
+                <tbody id="cert-topic-tbody" class="divide-y divide-slate-200 text-slate-700 font-medium">
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Footer Tanda Tangan -->
+          <div class="grid grid-cols-2 gap-4 pt-2 mt-1 text-xs sm:text-sm items-end">
+            <div class="text-slate-600 text-[11px] leading-relaxed">
+              <p><i class="fa-solid fa-shield-check text-emerald-600"></i> Dokumen sah diterbitkan otomatis oleh Sistem CBT SMPN 2 Kotagajah.</p>
+              <p>Waktu Selesai: <strong id="cert-timestamp" class="text-slate-800">-</strong></p>
+              <p>Durasi Pengerjaan: <strong id="cert-duration" class="text-slate-800">-</strong></p>
+            </div>
+            <div class="text-center sm:text-right pr-2">
+              <p class="text-xs text-slate-700" id="cert-date-place">Kotagajah, 20 November 2026</p>
+              <p class="text-xs font-bold text-slate-800">Guru Mata Pelajaran Matematika,</p>
+              <div class="h-11 flex items-center justify-center sm:justify-end my-0.5">
+                <span class="font-serif italic text-brand-800/80 text-base border border-brand-300/60 px-3 py-0.5 rounded bg-brand-50/40">TTD Digital Terverifikasi</span>
+              </div>
+              <p class="font-extrabold text-slate-900 underline">TEDDY KUSUMA YUDHA, S.Pd.</p>
+              <p class="text-[11px] text-slate-600">NIP. 19780613 200801 1 017</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 4: DASHBOARD TOOL GURU ==================== -->
+    <section id="view-teacher" class="hidden max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 flex-grow">
+      
+      <!-- Header Panel Guru -->
+      <div class="bg-white rounded-3xl shadow-md border-2 border-blue-100 p-5 sm:p-6 mb-6 flex flex-wrap items-center justify-between gap-4 no-print">
+        <div class="flex items-center gap-3.5">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-slate-950 flex items-center justify-center text-xl font-black shadow">
+            <i class="fa-solid fa-chalkboard-user"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h2 class="text-lg sm:text-xl font-extrabold text-slate-900">Dashboard Kontrol &amp; Rekap Nilai Guru</h2>
+              <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">Mode Guru Aktif</span>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-600">Guru Mapel: <strong>TEDDY KUSUMA YUDHA, S.Pd.</strong> • Total 11 Rombel (Kelas 9A – 9K = 352 Siswa)</p>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2.5">
+          <!-- Saklar Buka/Tutup Sesi Ujian -->
+          <button type="button" id="btn-toggle-exam-lock" onclick="toggleExamLockStatus()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm shadow flex items-center gap-2 transition">
+            <i id="icon-exam-lock" class="fa-solid fa-lock-open"></i>
+            <span id="text-exam-lock">Status Ujian: DIBUKA</span>
+          </button>
+
+          <button type="button" onclick="switchView('view-login')" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs sm:text-sm flex items-center gap-2 transition">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Keluar Tool Guru</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Kartu Statistik Ringkas -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6 no-print">
+        <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
+          <p class="text-xs font-bold text-slate-500 uppercase">Total Siswa (9A–9K)</p>
+          <p class="text-2xl sm:text-3xl font-black text-slate-900 mt-1" id="stat-total-students">352</p>
+          <p class="text-xs text-slate-500 mt-1">11 Rombongan Belajar</p>
+        </div>
+        <div class="bg-white rounded-2xl p-4 border border-emerald-200 shadow-sm">
+          <p class="text-xs font-bold text-emerald-700 uppercase">Sudah Selesai Ujian</p>
+          <p class="text-2xl sm:text-3xl font-black text-emerald-600 mt-1" id="stat-completed">0</p>
+          <p class="text-xs text-slate-500 mt-1" id="stat-completed-pct">0% dari total peserta</p>
+        </div>
+        <div class="bg-white rounded-2xl p-4 border border-blue-200 shadow-sm">
+          <p class="text-xs font-bold text-brand-700 uppercase">Rata-Rata Nilai</p>
+          <p class="text-2xl sm:text-3xl font-black text-brand-700 mt-1" id="stat-avg-score">0.0</p>
+          <p class="text-xs text-slate-500 mt-1">KKM Matematika: 75</p>
+        </div>
+        <div class="bg-white rounded-2xl p-4 border border-amber-200 shadow-sm">
+          <p class="text-xs font-bold text-amber-700 uppercase">Nilai Tertinggi</p>
+          <p class="text-2xl sm:text-3xl font-black text-amber-600 mt-1" id="stat-max-score">0</p>
+          <p class="text-xs text-slate-500 mt-1 truncate" id="stat-top-student">Belum ada data</p>
+        </div>
+      </div>
+
+      <!-- Tab Menu Tool Guru -->
+      <div class="flex flex-wrap gap-2 mb-5 no-print">
+        <button type="button" onclick="switchTeacherTab('tab-rekap')" id="btn-tab-rekap" class="teacher-tab-btn px-4 py-2.5 rounded-xl bg-brand-700 text-white font-bold text-xs sm:text-sm shadow-sm flex items-center gap-2 transition">
+          <i class="fa-solid fa-table-list"></i> Rekap Nilai &amp; Kontrol Siswa
+        </button>
+        <button type="button" onclick="switchTeacherTab('tab-bank')" id="btn-tab-bank" class="teacher-tab-btn px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold text-xs sm:text-sm flex items-center gap-2 transition">
+          <i class="fa-solid fa-book-open"></i> Bank Soal, Kunci &amp; Pembahasan (40 Soal)
+        </button>
+      </div>
+
+      <!-- TAB 1: REKAP NILAI & KONTROL SISWA -->
+      <div id="tab-rekap" class="bg-white rounded-3xl shadow-md border border-slate-200 p-5 sm:p-6 no-print">
+        <!-- Filter & Aksi Massal -->
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-5 pb-4 border-b border-slate-200">
+          <div class="flex flex-wrap items-center gap-2.5">
+            <select id="filter-teacher-kelas" onchange="renderTeacherTable()" class="px-3.5 py-2 rounded-xl border border-slate-300 bg-slate-50 text-xs sm:text-sm font-bold text-slate-800 outline-none">
+              <option value="ALL">Semua Kelas (9A - 9K)</option>
+              <option value="9A">Kelas 9A</option>
+              <option value="9B">Kelas 9B</option>
+              <option value="9C">Kelas 9C</option>
+              <option value="9D">Kelas 9D</option>
+              <option value="9E">Kelas 9E</option>
+              <option value="9F">Kelas 9F</option>
+              <option value="9G">Kelas 9G</option>
+              <option value="9H">Kelas 9H</option>
+              <option value="9I">Kelas 9I</option>
+              <option value="9J">Kelas 9J</option>
+              <option value="9K">Kelas 9K</option>
+            </select>
+
+            <select id="filter-teacher-status" onchange="renderTeacherTable()" class="px-3.5 py-2 rounded-xl border border-slate-300 bg-slate-50 text-xs sm:text-sm font-bold text-slate-800 outline-none">
+              <option value="ALL">Semua Status</option>
+              <option value="DONE">Sudah Ujian</option>
+              <option value="PENDING">Belum Ujian</option>
+            </select>
+
+            <div class="relative">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+              <input type="text" id="filter-teacher-search" oninput="renderTeacherTable()" placeholder="Cari nama / NIS..." class="pl-8 pr-3 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm outline-none focus:border-brand-500 w-44 sm:w-56" />
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <button type="button" onclick="exportResultsCSV()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition">
+              <i class="fa-solid fa-file-excel"></i> Export CSV / Excel
+            </button>
+            <button type="button" onclick="confirmResetAllResults()" class="px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition">
+              <i class="fa-solid fa-rotate-left"></i> Reset Semua Data
+            </button>
+          </div>
+        </div>
+
+        <!-- Tabel Rekap -->
+        <div class="overflow-x-auto max-h-[540px] rounded-2xl border border-slate-200">
+          <table class="w-full text-left border-collapse text-xs sm:text-sm">
+            <thead class="bg-slate-100 text-slate-800 font-extrabold sticky top-0 z-10 border-b border-slate-300">
+              <tr>
+                <th class="py-3 px-3">No</th>
+                <th class="py-3 px-3">Kelas</th>
+                <th class="py-3 px-3">NIS / NISN</th>
+                <th class="py-3 px-3">Nama Lengkap Siswa</th>
+                <th class="py-3 px-3 text-center">Status</th>
+                <th class="py-3 px-3 text-center">Benar</th>
+                <th class="py-3 px-3 text-center">Nilai</th>
+                <th class="py-3 px-3 text-center">Predikat</th>
+                <th class="py-3 px-3 text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="teacher-rekap-tbody" class="divide-y divide-slate-200"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 2: BANK SOAL, KUNCI JAWABAN & PEMBAHASAN -->
+      <div id="tab-bank" class="hidden bg-white rounded-3xl shadow-md border border-slate-200 p-5 sm:p-6">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-5 pb-4 border-b border-slate-200 no-print">
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-base sm:text-lg">Kisi-Kisi, Kunci Jawaban &amp; Pembahasan Lengkap (40 Soal)</h3>
+            <p class="text-xs text-slate-600">Materi: SPLDV (1–10), Bangun Ruang Sisi Datar (11–20), Lingkaran (21–30), Bangun Ruang Sisi Lengkung (31–40)</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" onclick="printTeacherDocument('questions')" class="px-3.5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition">
+              <i class="fa-solid fa-print"></i> Cetak Naskah Soal
+            </button>
+            <button type="button" onclick="printTeacherDocument('solutions')" class="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs flex items-center gap-1.5 shadow-sm transition">
+              <i class="fa-solid fa-key"></i> Cetak Kunci &amp; Pembahasan
+            </button>
+          </div>
+        </div>
+
+        <div id="printable-solutions-area" class="space-y-4">
+          <div id="teacher-bank-list" class="space-y-4"></div>
+        </div>
+        <div id="printable-questions-area" class="hidden"></div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="bg-slate-900 text-slate-400 text-xs py-4 px-4 text-center border-t border-slate-800 no-print mt-auto">
+    <p>&copy; 2026 <strong>SMP Negeri 2 Kotagajah</strong> • Sistem Evaluasi CBT Matematika Kelas IX • Pengampu: <span class="text-slate-200 font-semibold">Teddy Kusuma Yudha, S.Pd.</span></p>
+  </footer>
+
+  <!-- ==================== JAVASCRIPT APPLICATION LOGIC ==================== -->
+
+  <!-- Supabase JS (UMD, classic script) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

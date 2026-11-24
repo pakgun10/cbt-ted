@@ -1,0 +1,5 @@
+# Jangan commit anon key / data siswa asli bila repo-nya publik.
+# js/config.js berisi URL + anon key project — anon key memang dirancang
+# untuk dipakai di browser, tapi tetap jangan commit service_role key
+# di file apa pun.
+# Kalau repo ini privat (seperti cbt-ted Pak Gun), config.js boleh ikut.
