@@ -150,7 +150,7 @@
       <div class="flex flex-wrap items-center gap-2 ml-auto sm:ml-0">
         <div id="sync-badge" class="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 text-xs text-blue-100 border border-white/15">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span id="sync-text" class="text-white font-semibold">352 Siswa Terdaftar</span>
+          <span id="sync-text" class="text-white font-semibold">Siswa Terdaftar</span>
         </div>
         <button id="btn-cert-portal" onclick="openCertificateLookupView()" class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-cyan-300 hover:bg-cyan-200 text-slate-950 font-extrabold text-xs sm:text-sm shadow-md transition active:scale-95">
           <i class="fa-solid fa-award text-cyan-950"></i>
@@ -180,7 +180,7 @@
             </div>
             <h2 class="text-2xl sm:text-3xl font-extrabold text-white leading-snug mb-3">Ujian Online Matematika Kelas 9</h2>
             <p class="text-slate-100 text-sm leading-relaxed mb-6">
-              Silakan pilih kelas (9A–9K) dan nama lengkap Anda sesuai daftar hadir resmi SMP Negeri 2 Kotagajah untuk memulai ujian.
+              Silakan pilih kelas dan nama lengkap Anda sesuai daftar hadir resmi SMP Negeri 2 Kotagajah untuk memulai ujian.
             </p>
 
             <!-- Detail Spesifikasi Soal -->
@@ -236,18 +236,18 @@
                 </label>
                 <select id="select-kelas" onchange="handleClassChange(this.value)" required class="w-full px-3.5 py-3 rounded-xl border-2 border-blue-200 bg-blue-50/40 focus:bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none text-sm font-bold text-slate-900 transition">
                   <option value="">-- Kelas --</option>
-                  <option value="9A">Kelas 9A (34)</option>
-                  <option value="9B">Kelas 9B (33)</option>
-                  <option value="9C">Kelas 9C (33)</option>
-                  <option value="9D">Kelas 9D (32)</option>
-                  <option value="9E">Kelas 9E (30)</option>
-                  <option value="9F">Kelas 9F (32)</option>
-                  <option value="9G">Kelas 9G (32)</option>
-                  <option value="9H">Kelas 9H (31)</option>
-                  <option value="9I">Kelas 9I (30)</option>
-                  <option value="9J">Kelas 9J (32)</option>
-                  <option value="9K">Kelas 9K (33)</option>
-                </select>
+                  <option value="9.1">Kelas 9.1</option>
+                  <option value="9.2">Kelas 9.2</option>
+                  <option value="9.3">Kelas 9.3</option>
+                  <option value="9.4">Kelas 9.4</option>
+                  <option value="9.5">Kelas 9.5</option>
+                  <option value="9.6">Kelas 9.6</option>
+                  <option value="9.7">Kelas 9.7</option>
+                  <option value="9.8">Kelas 9.8</option>
+                  <option value="9.9">Kelas 9.9</option>
+                  <option value="9.10">Kelas 9.10</option>
+                  <option value="9.11">Kelas 9.11</option>
+                                                                                                                                                                                                                      </select>
               </div>
 
               <div class="sm:col-span-2">
@@ -348,11 +348,11 @@
       <div class="bg-white rounded-2xl shadow-md border-2 border-blue-100 p-3.5 sm:p-4 mb-4 flex flex-wrap items-center justify-between gap-3">
         <div class="flex items-center gap-3">
           <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-brand-600 to-indigo-700 text-white font-extrabold flex items-center justify-center text-sm shadow-md" id="exam-avatar">
-            9A
+            9
           </div>
           <div>
             <h2 class="font-extrabold text-slate-900 text-sm sm:text-base leading-tight" id="exam-student-name">NAMA SISWA</h2>
-            <p class="text-xs font-medium text-slate-600" id="exam-student-meta">Kelas 9A • NIS: - • SMP Negeri 2 Kotagajah</p>
+            <p class="text-xs font-medium text-slate-600" id="exam-student-meta">Kelas - • NIS: - • SMP Negeri 2 Kotagajah</p>
           </div>
         </div>
 
@@ -484,19 +484,18 @@
           <div>
             <label class="block text-xs font-bold uppercase text-slate-600 mb-1">1. Pilih Kelas</label>
             <select id="cert-lookup-kelas" onchange="handleCertLookupClassChange(this.value)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-slate-50 font-bold text-sm text-slate-900 outline-none focus:border-cyan-600">
-              <option value="">-- Pilih Kelas (9A - 9K) --</option>
-              <option value="9A">Kelas 9A</option>
-              <option value="9B">Kelas 9B</option>
-              <option value="9C">Kelas 9C</option>
-              <option value="9D">Kelas 9D</option>
-              <option value="9E">Kelas 9E</option>
-              <option value="9F">Kelas 9F</option>
-              <option value="9G">Kelas 9G</option>
-              <option value="9H">Kelas 9H</option>
-              <option value="9I">Kelas 9I</option>
-              <option value="9J">Kelas 9J</option>
-              <option value="9K">Kelas 9K</option>
-            </select>
+              <option value="">-- Pilih Kelas --</option>
+              <option value="9.1">Kelas 9.1</option>
+              <option value="9.2">Kelas 9.2</option>
+              <option value="9.3">Kelas 9.3</option>
+              <option value="9.4">Kelas 9.4</option>
+              <option value="9.5">Kelas 9.5</option>
+              <option value="9.6">Kelas 9.6</option>
+              <option value="9.7">Kelas 9.7</option>
+              <option value="9.8">Kelas 9.8</option>
+              <option value="9.9">Kelas 9.9</option>
+              <option value="9.10">Kelas 9.10</option>
+              <option value="9.11">Kelas 9.11</option></select>
           </div>
           <div class="sm:col-span-2">
             <label class="block text-xs font-bold uppercase text-slate-600 mb-1">2. Pilih Nama Siswa (Yang Sudah Selesai Ujian)</label>
@@ -587,7 +586,7 @@
               NAMA LENGKAP SISWA
             </h3>
             <p id="cert-student-detail" class="text-xs sm:text-sm font-semibold text-slate-700">
-              Kelas: 9A • NIS: - • NISN: - • Wali Kelas: -
+              Kelas: - • NIS: - • NISN: - • Wali Kelas: -
             </p>
           </div>
 
@@ -655,7 +654,7 @@
               <h2 class="text-lg sm:text-xl font-extrabold text-slate-900">Dashboard Kontrol &amp; Rekap Nilai Guru</h2>
               <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">Mode Guru Aktif</span>
             </div>
-            <p class="text-xs sm:text-sm text-slate-600">Guru Mapel: <strong>TEDDY KUSUMA YUDHA, S.Pd.</strong> • Total 11 Rombel (Kelas 9A – 9K = 352 Siswa)</p>
+            <p class="text-xs sm:text-sm text-slate-600">Guru Mapel: <strong>TEDDY KUSUMA YUDHA, S.Pd.</strong> • Daftar hadir resmi TP 2026/2027</p>
           </div>
         </div>
 
@@ -676,9 +675,9 @@
       <!-- Kartu Statistik Ringkas -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6 no-print">
         <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
-          <p class="text-xs font-bold text-slate-500 uppercase">Total Siswa (9A–9K)</p>
+          <p class="text-xs font-bold text-slate-500 uppercase">Total Siswa</p>
           <p class="text-2xl sm:text-3xl font-black text-slate-900 mt-1" id="stat-total-students">352</p>
-          <p class="text-xs text-slate-500 mt-1">11 Rombongan Belajar</p>
+          <p class="text-xs text-slate-500 mt-1">Rombongan Belajar Kelas 9</p>
         </div>
         <div class="bg-white rounded-2xl p-4 border border-emerald-200 shadow-sm">
           <p class="text-xs font-bold text-emerald-700 uppercase">Sudah Selesai Ujian</p>
@@ -713,19 +712,18 @@
         <div class="flex flex-wrap items-center justify-between gap-3 mb-5 pb-4 border-b border-slate-200">
           <div class="flex flex-wrap items-center gap-2.5">
             <select id="filter-teacher-kelas" onchange="renderTeacherTable()" class="px-3.5 py-2 rounded-xl border border-slate-300 bg-slate-50 text-xs sm:text-sm font-bold text-slate-800 outline-none">
-              <option value="ALL">Semua Kelas (9A - 9K)</option>
-              <option value="9A">Kelas 9A</option>
-              <option value="9B">Kelas 9B</option>
-              <option value="9C">Kelas 9C</option>
-              <option value="9D">Kelas 9D</option>
-              <option value="9E">Kelas 9E</option>
-              <option value="9F">Kelas 9F</option>
-              <option value="9G">Kelas 9G</option>
-              <option value="9H">Kelas 9H</option>
-              <option value="9I">Kelas 9I</option>
-              <option value="9J">Kelas 9J</option>
-              <option value="9K">Kelas 9K</option>
-            </select>
+              <option value="ALL">Semua Kelas</option>
+              <option value="9.1">Kelas 9.1</option>
+              <option value="9.2">Kelas 9.2</option>
+              <option value="9.3">Kelas 9.3</option>
+              <option value="9.4">Kelas 9.4</option>
+              <option value="9.5">Kelas 9.5</option>
+              <option value="9.6">Kelas 9.6</option>
+              <option value="9.7">Kelas 9.7</option>
+              <option value="9.8">Kelas 9.8</option>
+              <option value="9.9">Kelas 9.9</option>
+              <option value="9.10">Kelas 9.10</option>
+              <option value="9.11">Kelas 9.11</option></select>
 
             <select id="filter-teacher-status" onchange="renderTeacherTable()" class="px-3.5 py-2 rounded-xl border border-slate-300 bg-slate-50 text-xs sm:text-sm font-bold text-slate-800 outline-none">
               <option value="ALL">Semua Status</option>

@@ -31,9 +31,9 @@ let supabaseClient = null;
 let supabaseReady = false;
 let isTeacher = false;
 
-let CLASS_CONFIG = {};        // { '9A': { count, walas }, ... } — dari DB
-let STUDENTS_BY_CLASS = {};   // { '9A': [student, ...] }
-let ALL_STUDENTS_MAP = {};    // { '9A-01': student }
+let CLASS_CONFIG = {};        // { '9.1': { count, walas }, ... } — dari DB
+let STUDENTS_BY_CLASS = {};   // { '9.1': [student, ...] }
+let ALL_STUDENTS_MAP = {};    // { '9.1-01': student }
 let QUESTION_BANK_FULL = [];  // hanya untuk guru (tabel questions, ada kunci)
 let examResults = {};         // { studentId: resultNormal }
 let isExamLocked = false;
@@ -103,14 +103,33 @@ function normalizeResult(row) {
 }
 
 function rebuildClassOptions() {
-  const sel = document.getElementById('select-kelas');
-  if (!sel) return;
-  const prev = sel.value;
-  const classes = Object.keys(STUDENTS_BY_CLASS).sort();
+  // Urut numerik supaya 9.1, 9.2, ... 9.10, 9.11 (bukan 9.1, 9.10, 9.2).
+  const classes = Object.keys(STUDENTS_BY_CLASS).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
   if (classes.length === 0) return; // biarkan opsi HTML asli bila DB belum terisi
-  sel.innerHTML = '<option value="">-- Kelas --</option>' +
-    classes.map(k => `<option value="${k}">Kelas ${k} (${STUDENTS_BY_CLASS[k].length})</option>`).join('');
-  if (prev && STUDENTS_BY_CLASS[prev]) sel.value = prev;
+  // Dropdown utama (login ujian) — dari DB, bukan hardcode 9A-9K.
+  const sel = document.getElementById('select-kelas');
+  if (sel) {
+    const prev = sel.value;
+    sel.innerHTML = '<option value="">-- Kelas --</option>' +
+      classes.map(k => `<option value="${k}">Kelas ${k} (${STUDENTS_BY_CLASS[k].length})</option>`).join('');
+    if (prev && STUDENTS_BY_CLASS[prev]) sel.value = prev;
+  }
+  // Dropdown portal sertifikat — dari DB juga.
+  const certSel = document.getElementById('cert-lookup-kelas');
+  if (certSel) {
+    const prev = certSel.value;
+    certSel.innerHTML = '<option value="">-- Pilih Kelas --</option>' +
+      classes.map(k => `<option value="${k}">Kelas ${k}</option>`).join('');
+    if (prev && STUDENTS_BY_CLASS[prev]) certSel.value = prev;
+  }
+  // Filter kelas di Tool Guru — dari DB juga.
+  const filterSel = document.getElementById('filter-teacher-kelas');
+  if (filterSel) {
+    const prev = filterSel.value;
+    filterSel.innerHTML = '<option value="ALL">Semua Kelas</option>' +
+      classes.map(k => `<option value="${k}">Kelas ${k}</option>`).join('');
+    if (prev && (prev === 'ALL' || STUDENTS_BY_CLASS[prev])) filterSel.value = prev;
+  }
 }
 
 async function loadStudents() {
@@ -1123,7 +1142,7 @@ function resetSingleStudent(studentId) {
 function confirmResetAllResults() {
   openModal({
     title: '<i class="fa-solid fa-triangle-exclamation"></i> Reset Seluruh Data Nilai',
-    message: 'Tindakan ini akan menghapus <strong>SELURUH</strong> hasil ujian siswa dari semua kelas (9A–9K) di Supabase. Pastikan Anda sudah mengunduh file CSV sebelum mereset!',
+    message: 'Tindakan ini akan menghapus <strong>SELURUH</strong> hasil ujian siswa dari semua kelas di Supabase. Pastikan Anda sudah mengunduh file CSV sebelum mereset!',
     confirmText: 'Hapus & Reset Semua',
     confirmClass: 'bg-rose-600 hover:bg-rose-700',
     onConfirm: async () => {
