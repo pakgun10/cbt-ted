@@ -9,7 +9,7 @@
 window.CBT_CONFIG = {
   supabaseUrl: 'https://jqbsnxqjgrmziteItppn.supabase.co',
   // Ganti 'PASTE_ANON_KEY_DI_SINI' dengan anon key project cbt-ted.
-  supabaseAnonKey: 'PASTE_ANON_KEY_DI_SINI',
+  supabaseAnonKey: 'sb_publishable_sLUIaDff2M0JSOPdOc7KIg_ANDw6MXC',
 
   // Durasi ujian (menit) dan KKM — samakan dengan schema.sql bila diubah.
   examDurationMinutes: 90,
